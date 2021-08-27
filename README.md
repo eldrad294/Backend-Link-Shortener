@@ -3,6 +3,10 @@ Design of a link shortening API service
 
 ## Design
 
+![alt text](High Level Overview-High Level.png)
+
+![alt text](High Level Overview-Low Level.png)
+
 ## Requirements
 
 This section covers the components featuring in the design section, and explains what the reponsibility of each module is, how it can be broken down into smaller development 'chunks', feature some examples how these will be implemented, and finally give an estimate on the amount of work needed.
@@ -11,7 +15,7 @@ This section covers the components featuring in the design section, and explains
 
 Two tables will be required for this service.
 
-REPLACEME IMG
+![alt text](High Level Overview-ERD.png)
 
 Assuming syntax dialect is Postgres Dialect:
 
