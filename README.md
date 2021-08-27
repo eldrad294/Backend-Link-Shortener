@@ -3,9 +3,9 @@ Design of a link shortening API service
 
 ## Design
 
-![Screenshot](High Level Overview-High Level.png)
+![Screenshot](/High Level Overview-High Level.png)
 
-![Screenshot](High Level Overview-Low Level.png)
+![Screenshot](/High Level Overview-Low Level.png)
 
 
 ## Requirements
@@ -16,7 +16,7 @@ This section covers the components featuring in the design section, and explains
 
 Two tables will be required for this service.
 
-![Screenshot](High Level Overview-ERD.png)
+![Screenshot](/High Level Overview-ERD.png)
 
 Assuming syntax dialect is Postgres Dialect:
 
