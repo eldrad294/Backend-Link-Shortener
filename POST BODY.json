@@ -1,0 +1,18 @@
+--------------------Request--------------------
+
+HEADER
+{
+    "Authorization": "Bearer Token"  // OAuth token, assumed to have already been supplied to customer
+}
+
+BODY
+{
+    "url": "https://www.google.com"  // URL that the customer is requesting for shortening
+}
+
+--------------------Response--------------------
+
+HEADER
+{
+    "Status": 201  // Confirms shortened url creation
+}
