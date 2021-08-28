@@ -3,7 +3,11 @@ Design of a link shortening API service
 
 ## Design
 
+### High Level
+
 ![Screenshot](/High-Level-Overview-High-Level.png)
+
+### Low Level
 
 ![Screenshot](/High-Level-Overview-Low-Level.png)
 
@@ -21,6 +25,7 @@ Two tables will be required for this service.
 Assuming syntax dialect is Postgres Dialect:
 
 ```
+-- Customer Table. Customer registration (and token assignment) is assumed to be catered for outside the scope of this service. I included it to give the reader a basic idea how a customer table can be used as a central source of truth and verification method (due to the passed OAuth token).
 CREATE TABLE customer_table (
     id                   integer,
     firstname            varchar(100),
@@ -30,16 +35,19 @@ CREATE TABLE customer_table (
     CONSTRAINT customer_pk PRIMARY KEY(customer_id)
 );
 
+-- Url Table. This is the central fact table for the service. In this table, we keep a record of all the original urls, and their shortened format, along with the Customer Id who requested the shortening. I also though it convenient to add fields to capture the time the field got created and updated.
 CREATE TABLE url_table (
-    id                 integer,
-    customer_id        integer,
-    request_url        varchar(4000),
-    short_url          varchar(100),
-    created_datetime   timestamp DEFAULT current_timestamp,
+    id                     integer,
+    customer_id            integer,
+    request_url            varchar(4000),
+    short_url              varchar(100),
+    created_datetime       timestamp DEFAULT current_timestamp,
+    last_updated_datetime  timestamp DEFAULT current_timestamp,
     CONSTRAINT url_pk PRIMARY KEY(id),
     CONSTRAINT fk_url_customer FOREIGN KEY(customer_id) REFERENCES customer_table(id)
 );
 
+-- Clicks Table. This table acts as a logging table for every single click event which happens. We capture the shortened url which is being clicked, the customer requesting the link, and the date/time this happened.
 CREATE TABLE clicks_table (
     id               integer,
     customer_id      integer,
@@ -56,7 +64,7 @@ At least 2 model classes are required to match the RDBMS table setup.
 Assuming syntax dialect is Java:
 
 ```
-public class customer{
+public class Customer{
     private Long id;
     private String firstname;
     private String lastname;
@@ -72,12 +80,13 @@ public class customer{
     // Additional Methods (toString, toHash, getFullName, etc)
 }
 
-public class url{
+public class Url{
     private Long id;
     private Long customer_id;
     private String request_url;
     private String short_url;
     private DateTime created_datetime;
+    private DateTime last_updated_datetime;
 
     // Constructor (or builder pattern equivalent)
 
@@ -86,6 +95,47 @@ public class url{
     // Getters
 
     // Additional Methods (toString, toHash, etc)
+}
+
+public class Clicks{
+    private Long id;
+    private Long customer_id;
+    private String short_url;
+    private DateTime click_datetime;
+
+    // Constructor (or builder pattern equivalent)
+
+    // Setters
+
+    // Getters
+
+    // Additional Methods (toString, toHash, etc)
+}
+```
+
+### DB Services
+
+Each Postgres table defined above should have it's own dedicated service layer. The DB service module will be responsible for integrating with the RDBMS, on a specific table, and operate all DML requests on behalf of the API. CRUD requests performed by the controller, will go through the respective DB service, and the DB service will interact with the table on the controller's behalf. A total of 3 services are required:
+
+* CustomerService (Couples with the 'customer_table' table)
+* UrlService (Couples with the 'url_table' table)
+* ClicksService (Couples with the 'clicks_table' table)
+
+An example of how a service will look like is as follows (assuming syntax dialect is Java):
+
+```
+// Basic CRUD Service
+public interface UrlService extends JpaRepository<Url> {
+
+    @Query(value = "select request_url from url_table where customer_id=:customerId and short_url=:url")
+    String retrieve(Long customerId, String url);
+
+    boolean create(Url url);
+    
+    boolean update(String updateUrl, String shortUrl, String customerId);
+
+    boolean delete(Url url);
+
 }
 ```
 
@@ -100,15 +150,6 @@ public static String shortenUrl(String inputUrl, String customerId){
 ```
 
 Given that each shortened url must be unique per customer, the function also accepts a second input parameter denoting the customer id. With both the customer id and the input url, we can assume that the function will compute a unique hash on these two values together,
-
-
-### Request Validator
-
-The validator module receives the OAuth token from the incoming customer API requests (sent as part of the Header), and uses it to authorize / authenticate the customer in before the resource endpoint can be accessed. The purpose of the token is 3 fold:
-
-* Authenticate the user, and verify that he can access the endpoints available within the API.
-* Authorize the user, in case certain endpoints have higher privilege access compared to others.
-* Get the customer_id, which we will used in the endpoint mappings below to verify that a customer_id exists when matching for urls.
 
 ### End Point Mappings (Controllers)
 
@@ -219,3 +260,74 @@ public ResponseEntity<?> retrieve(@RequestHeader("Authorization") String token,
 
 }
 ```
+
+### Request Validator
+
+The validator module receives the OAuth token from the incoming customer API requests (sent as part of the Header), and uses it to authorize / authenticate the customer in before the resource endpoint can be accessed. The purpose of the token is 3 fold:
+
+* Authenticate the user, and verify that he can access the endpoints available within the API.
+* Authorize the user, in case certain endpoints have higher privilege access compared to others.
+* Get the customer_id, which we will used in the endpoint mappings below to verify that a customer_id exists when matching for urls.
+
+## Estimates
+
+This section attempt to assign estimates to the pre-discussed modules above. Each day is the equivalent of 8 hours.
+
+* Request Validator -> (Java / Python) -> 2 Days
+* End Point Mappers (Controllers) -> (Java / Python) -> 3 Days
+* URL Shortener -> (Java / Python) -> 0.5 Days
+* Data Mappers (Models) -> (Java / Python) -> 0.5 Days
+* DB Services -> (Java / Python) -> 1 Days
+* Unit Tests -> (Java / Python) -> 1.5 Days
+* Integration Tests -> (Java / Python) -> 1.5 Days
+* PSQL Tables -> (Postgres) -> 0.5 Days
+* PSQL Optimizations; Indexes, Partitions -> (Postgres) -> 0.5 Days
+* Documentation -> 1 Days
+
+Total estimated man days: 12 Man Days + 2 Bank Holidays (~ 3 weeks total)
+
+Assumptions:
+* You are the only engineer working on the project.
+* You have full autonomy to make all technology decisions (no mandated language or frameworks).
+* You are working 40 hours per week. There are two 30-minute meetings each week.
+* The provided ship date should assume you will be starting on the project immediately.
+* In the middle of the project, there is a 2 day national holiday, which is a non-work day.
+
+Day 1
+ - PSQL Tables
+ - PSQL Optimizations; Indexes, Partitions
+Day 2 
+ - Data Mappers (Models)
+ - URL Shortener
+Day 3
+ - Bank Holiday
+Day 4
+ - DB Services
+Day 5
+ - End Point Mappers (Controllers)
+Day 6
+ - End Point Mappers (Controllers) - Continuation
+Day 7
+ - End Point Mappers (Controllers) - Continuation
+Day 8
+ - Bank Holiday
+Day 9
+ - Request Validator
+Day 10
+ - Request Validator - Continuation
+Day 11
+  - Unit Tests
+Day 12
+  - Unit Tests - Continuation
+  - Integration Tests
+Day 13
+  - Integration Tests - Continuation
+Day 14
+  - Documentation
+
+
+
+## Future Work
+
+* Caching mechanisms
+
