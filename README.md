@@ -271,6 +271,8 @@ The validator module receives the OAuth token from the incoming customer API req
 
 ## Estimates
 
+### Distribution
+
 This section attempt to assign estimates to the pre-discussed modules above. Each day is the equivalent of 8 hours.
 
 * Request Validator -> (Java / Python) -> 2 Days
@@ -286,6 +288,8 @@ This section attempt to assign estimates to the pre-discussed modules above. Eac
 
 Total estimated man days: 12 Man Days + 2 Bank Holidays (~ 3 weeks total)
 
+### Daily Assignment
+
 Assumptions:
 * You are the only engineer working on the project.
 * You have full autonomy to make all technology decisions (no mandated language or frameworks).
@@ -293,39 +297,37 @@ Assumptions:
 * The provided ship date should assume you will be starting on the project immediately.
 * In the middle of the project, there is a 2 day national holiday, which is a non-work day.
 
-Day 1
+* Day 1
  - PSQL Tables
  - PSQL Optimizations; Indexes, Partitions
-Day 2 
+* Day 2 
  - Data Mappers (Models)
  - URL Shortener
-Day 3
+* Day 3
  - Bank Holiday
-Day 4
+* Day 4
  - DB Services
-Day 5
+* Day 5
  - End Point Mappers (Controllers)
-Day 6
+* Day 6
  - End Point Mappers (Controllers) - Continuation
-Day 7
+* Day 7
  - End Point Mappers (Controllers) - Continuation
-Day 8
+* Day 8
  - Bank Holiday
-Day 9
+* Day 9
  - Request Validator
-Day 10
+* Day 10
  - Request Validator - Continuation
-Day 11
+* Day 11
   - Unit Tests
-Day 12
+* Day 12
   - Unit Tests - Continuation
   - Integration Tests
-Day 13
+* Day 13
   - Integration Tests - Continuation
-Day 14
+* Day 14
   - Documentation
-
-
 
 ## Future Work
 
