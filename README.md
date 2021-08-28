@@ -291,34 +291,34 @@ Total estimated man days: 12 Man Days + 2 Bank Holidays (~ 3 weeks total)
 ### Daily Assignment
 
 Assumptions:
-* You are the only engineer working on the project.
-* You have full autonomy to make all technology decisions (no mandated language or frameworks).
-* You are working 40 hours per week. There are two 30-minute meetings each week.
-* The provided ship date should assume you will be starting on the project immediately.
-* In the middle of the project, there is a 2 day national holiday, which is a non-work day.
+- You are the only engineer working on the project.
+- You have full autonomy to make all technology decisions (no mandated language or frameworks).
+- You are working 40 hours per week. There are two 30-minute meetings each week.
+- The provided ship date should assume you will be starting on the project immediately.
+- In the middle of the project, there is a 2 day national holiday, which is a non-work day.
 
 * Day 1
- - PSQL Tables
- - PSQL Optimizations; Indexes, Partitions
+  - PSQL Tables
+  - PSQL Optimizations; Indexes, Partitions
 * Day 2 
- - Data Mappers (Models)
- - URL Shortener
+  - Data Mappers (Models)
+  - URL Shortener
 * Day 3
- - Bank Holiday
+  - Bank Holiday
 * Day 4
- - DB Services
+  - DB Services
 * Day 5
- - End Point Mappers (Controllers)
+  - End Point Mappers (Controllers)
 * Day 6
- - End Point Mappers (Controllers) - Continuation
+  - End Point Mappers (Controllers) - Continuation
 * Day 7
- - End Point Mappers (Controllers) - Continuation
+  - End Point Mappers (Controllers) - Continuation
 * Day 8
- - Bank Holiday
+  - Bank Holiday
 * Day 9
- - Request Validator
+  - Request Validator
 * Day 10
- - Request Validator - Continuation
+  - Request Validator - Continuation
 * Day 11
   - Unit Tests
 * Day 12
